@@ -1,4 +1,4 @@
-from typing import List, Dict
+from typing import Dict, List
 
 
 def filter_by_state(data: List[Dict], state: str = 'EXECUTED') -> List[Dict]:
@@ -14,14 +14,13 @@ def filter_by_state(data: List[Dict], state: str = 'EXECUTED') -> List[Dict]:
     return [item for item in data if item.get('state') == state]
 
 
-def sort_by_date(data: List[Dict],
-                 order: str = 'descending') -> List[Dict]:
+def sort_by_date(data: List[Dict], order: bool = True) -> List[Dict]:
     """Сортирует список словарей по ключу 'date'.
 
     Аргументы:
         data (List[Dict]): Список словарей с данными.
-        order (str): Порядок сортировки ('ascending' или 'descending';
-                      по умолчанию 'descending').
+        order (bool): Булевое значение, определяющее порядок сортировки
+        (True - по возрастанию, False - по убыванию).
 
     Возвращает:
         List[Dict]: Отсортированный список словарей.
@@ -29,6 +28,6 @@ def sort_by_date(data: List[Dict],
     sorted_data = sorted(
         data,
         key=lambda x: x['date'],
-        reverse=(order.lower() != 'ascending')
+        reverse=not order
     )
     return sorted_data
