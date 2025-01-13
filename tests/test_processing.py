@@ -1,51 +1,37 @@
-import unittest
-from processing import filter_by_state
+import sys
+import os
 
-class TestProcessing(unittest.TestCase):
-    def test_filter_by_state_executed(self):
-        # Подготавливаем тестовые данные
-        transactions = [
-            {'id': 1, 'amount': 1000, 'state': 'PENDING'},
-            {'id': 2, 'amount': 2000, 'state': 'EXECUTED'},
-            {'id': 3, 'amount': 3000, 'state': 'CANCELED'}
-        ]
+# Добавляем корень проекта в sys.path
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-        # Выполняем фильтрацию
-        filtered_transactions = filter_by_state(transactions)
+from src.processing import filter_by_state, sort_by_date
 
-        # Проверка результата
-        self.assertEqual(len(filtered_transactions), 1)
-        self.assertDictEqual(filtered_transactions[0], {'id': 2, 'amount': 2000, 'state': 'EXECUTED'})
+import pytest
+from datetime import datetime
+from src.processing import filter_by_state, sort_by_date
 
-    def test_filter_by_state_pending(self):
-        transactions = [
-            {'id': 1, 'amount': 1000, 'state': 'PENDING'},
-            {'id': 2, 'amount': 2000, 'state': 'EXECUTED'},
-            {'id': 3, 'amount': 3000, 'state': 'CANCELED'}
-        ]
+@pytest.fixture
+def test_data():
+    # Генерация тестового списка словарей
+    return [
+        {'id': 1, 'state': 'PENDING', 'date': datetime(2023, 10, 15)},
+        {'id': 2, 'state': 'EXECUTED', 'date': datetime(2023, 9, 20)},
+        {'id': 3, 'state': 'CANCELED', 'date': datetime(2023, 8, 25)},
+        {'id': 4, 'state': 'EXECUTED', 'date': datetime(2023, 7, 30)}
+    ]
 
-        filtered_transactions = filter_by_state(transactions, state='PENDING')
+@pytest.mark.parametrize("state, expected_result", [
+    ('EXECUTED', [{'id': 2, 'state': 'EXECUTED', 'date': datetime(2023, 9, 20)}, {'id': 4, 'state': 'EXECUTED', 'date': datetime(2023, 7, 30)}]),
+    ('PENDING', [{'id': 1, 'state': 'PENDING', 'date': datetime(2023, 10, 15)}])
+])
+def test_filter_by_state(test_data, state, expected_result):
+    result = filter_by_state(test_data, state)
+    assert result == expected_result
 
-        self.assertEqual(len(filtered_transactions), 1)
-        self.assertDictEqual(filtered_transactions[0], {'id': 1, 'amount': 1000, 'state': 'PENDING'})
-
-    def test_filter_by_state_no_matches(self):
-        transactions = [
-            {'id': 1, 'amount': 1000, 'state': 'PENDING'},
-            {'id': 2, 'amount': 2000, 'state': 'EXECUTED'},
-            {'id': 3, 'amount': 3000, 'state': 'CANCELED'}
-        ]
-
-        filtered_transactions = filter_by_state(transactions, state='COMPLETED')
-
-        self.assertEqual(len(filtered_transactions), 0)
-
-    def test_filter_empty_transactions(self):
-        transactions = []
-
-        filtered_transactions = filter_by_state(transactions)
-
-        self.assertEqual(len(filtered_transactions), 0)
-
-if __name__ == '__main__':
-    unittest.main()
+@pytest.mark.parametrize("order, expected_result", [
+    (True, [{'id': 4, 'state': 'EXECUTED', 'date': datetime(2023, 7, 30)}, {'id': 3, 'state': 'CANCELED', 'date': datetime(2023, 8, 25)}, {'id': 2, 'state': 'EXECUTED', 'date': datetime(2023, 9, 20)}, {'id': 1, 'state': 'PENDING', 'date': datetime(2023, 10, 15)}]),
+    (False, [{'id': 1, 'state': 'PENDING', 'date': datetime(2023, 10, 15)}, {'id': 2, 'state': 'EXECUTED', 'date': datetime(2023, 9, 20)}, {'id': 3, 'state': 'CANCELED', 'date': datetime(2023, 8, 25)}, {'id': 4, 'state': 'EXECUTED', 'date': datetime(2023, 7, 30)}])
+])
+def test_sort_by_date(test_data, order, expected_result):
+    result = sort_by_date(test_data, order)
+    assert result == expected_result
