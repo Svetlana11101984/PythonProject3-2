@@ -2,13 +2,13 @@
 # get_mask_account_number as mask_account_number
 
 def mask_account_card(account_info):
-    # Если строка содержит пробел, значит, она включает в себя информацию о банке или типе карты
+    # Если строка содержит пробел, она включает информацию о банке или типе карты
     if ' ' in account_info:
         parts = account_info.split()
         masked_number = f"{parts[0]} {'*' * (len(parts[1]) - 4)}{parts[1][-4:]}"
         return masked_number
     else:
-        # Если пробела нет, значит, дана только карта, маскамируем ее соответствующим образом
+        # Если пробела нет, значит, дана лишь карта, маскамируем ее нужным образом
         return f"{'*' * (len(account_info) - 4)}{account_info[-4:]}"
 
 
