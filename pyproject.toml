@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "pythonproject"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = " "
+package-mode = false
+[tool.poetry.dependencies]
+python = "^3.13"
+
+
+[tool.poetry.group.lint.dependencies]
+flake8 = "^7.1.1"
+mypy = "^1.13.0"
+pip = "^24.3.1"
+pipx = "^1.7.1"
+black = "^24.10.0"
+isort = "^5.13.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
