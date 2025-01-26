@@ -4,12 +4,7 @@ def get_mask_card_number(card_number: str) -> str:
     :param card_number: Номер карты
     :return: Маскированный номер карты
     """
-    return (
-        f"{card_number[:4]} "
-        f"{card_number[4:7]}** "
-        f"{card_number[11:15]} "
-        f"{card_number[-4:]}"
-    )
+    return f"{card_number[:4]} {card_number[4:6]}** **** {card_number[-4:]}"
 
 
 def get_mask_account_number(account_number: str) -> str:
