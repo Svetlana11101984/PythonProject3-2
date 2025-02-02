@@ -1,9 +1,7 @@
 import pytest
+from src.masks import get_mask_card_number
 
 
-def get_mask_card_number(card_number):
-
-    return card_number[:4] + ' ' + card_number[4:6] + '** **** ' + card_number[-4:]
 
 @pytest.mark.parametrize("card_number, expected", [
     ("4234567890123456", "4234 56** **** 3456"),
