@@ -31,3 +31,35 @@ coverage html
 ```bash
 git clone https://https://github.com/Svetlana11101984/bank_project
 cd bank_project
+
+## Модуль `generators`
+
+Модуль `generators` содержит функции и генераторы для работы с данными транзакций.
+
+### Функции
+
+#### `filter_by_currency`
+Возвращает итератор, который поочередно выдает транзакции, где валюта операции соответствует заданной.
+
+**Пример использования:**
+
+```python
+usd_transactions = filter_by_currency(transactions, "USD")
+for _ in range(2):
+    print(next(usd_transactions))
+##### transaction_descriptions
+Генератор, который принимает список словарей с транзакциями и возвращает описание каждой операции по очереди.
+
+**Пример использования:**
+
+descriptions = transaction_descriptions(transactions)
+for _ in range(5):
+    print(next(descriptions))
+    
+###### card_number_generator
+Генератор, который выдает номера банковских карт в формате XXXX XXXX XXXX XXXX, где X — цифра номера карты. Принимает начальное и конечное значения для генерации диапазона номеров.
+
+**Пример использования:**
+
+for card_number in card_number_generator(1, 5):
+    print(card_number)
