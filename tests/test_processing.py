@@ -1,6 +1,7 @@
 import pytest
 from src.processing import sort_by_date
 
+
 def test_sort_by_date_ascending():
     unsorted_data = [
         {"date": "2023-01-05"},

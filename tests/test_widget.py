@@ -1,6 +1,7 @@
 import pytest
 from src.widget import mask_account_card
 
+
 def test_mask_account_card_valid_master_card():
     account_number = "Master Card 1234123456785678"
     expected_output = "Master Card 1234 12** **** 5678"

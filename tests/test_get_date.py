@@ -15,6 +15,7 @@ def test_get_mask_card_number(card_number, expected):
 import pytest
 from src.widget import get_date
 
+
 @pytest.mark.parametrize("date_str, expected", [
     ("2023-01-01T00:00:00.000001", "01.01.2023"),
     ("2023-12-31T23:59:59.999999", "31.12.2023"),
