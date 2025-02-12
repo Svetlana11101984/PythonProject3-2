@@ -11,10 +11,9 @@ def mask_account_card(account_info: str) -> str:
         return f"{' '.join(card_name)} {get_mask_card_number(card_number)}"
 
 
-
 def get_date(date_str: str) -> str:
     """
-    Преобразует дату из одного формата в другой.
+Преобразует дату из одного формата в другой.
 
     :param date_str: Дата в формате "YYYY-MM-DDTHH:MM:SS.mmmmmm".
     :return: Дата в формате "DD.MM.YYYY".
