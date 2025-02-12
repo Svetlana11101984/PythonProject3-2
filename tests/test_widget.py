@@ -1,4 +1,5 @@
 import unittest
+
 from bank_project.widget.mask_account_card import mask_account_card
 
 
