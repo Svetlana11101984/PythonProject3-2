@@ -1,7 +1,7 @@
 from typing import Dict, List
 
 
-def filter_by_state(data: List[Dict], state: str = 'EXECUTED') -> List[Dict]:
+def filter_by_state(data: List[Dict], state: str = "EXECUTED") -> List[Dict]:
     """Фильтрует список словарей по состоянию (ключу 'state').
 
     Аргументы:
@@ -11,7 +11,7 @@ def filter_by_state(data: List[Dict], state: str = 'EXECUTED') -> List[Dict]:
     Возвращает:
         List[Dict]: Новый список словарей, содержащих указанное состояние.
     """
-    return [item for item in data if item.get('state') == state]
+    return [item for item in data if item.get("state") == state]
 
 
 def sort_by_date(data: List[Dict], order: bool = True) -> List[Dict]:
@@ -25,9 +25,5 @@ def sort_by_date(data: List[Dict], order: bool = True) -> List[Dict]:
     Возвращает:
         List[Dict]: Отсортированный список словарей.
     """
-    sorted_data = sorted(
-        data,
-        key=lambda x: x['date'],
-        reverse=not order
-    )
+    sorted_data = sorted(data, key=lambda x: x["date"], reverse=not order)
     return sorted_data

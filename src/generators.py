@@ -9,8 +9,11 @@ def filter_by_currency(transactions, currency_code):
     :return: итератор, выдающий подходящие транзакции
     :rtype: Iterator[dict]
     """
-    return (transaction for transaction in transactions
-            if transaction["operationAmount"]["currency"]["code"] == currency_code)
+    return (
+        transaction
+        for transaction in transactions
+        if transaction["operationAmount"]["currency"]["code"] == currency_code
+    )
 
 
 def transaction_descriptions(transactions):
@@ -39,7 +42,7 @@ def card_number_generator(start, end):
     """
     for i in range(start, end + 1):
         # Преобразуем число в строку формата '0000 0000 0000 0000'
-        formatted_card_number = f'{i:016d}'
+        formatted_card_number = f"{i:016d}"
         # Разделяем каждую группу из четырех цифр пробелом
-        grouped_card_number = ' '.join(formatted_card_number[i:i + 4] for i in range(0, 16, 4))
+        grouped_card_number = " ".join(formatted_card_number[i : i + 4] for i in range(0, 16, 4))
         yield grouped_card_number
