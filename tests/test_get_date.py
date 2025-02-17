@@ -1,5 +1,6 @@
 import pytest
-from src.masks import get_mask_card_number, get_date
+from src.masks import get_mask_card_number
+from src.widget import get_date
 
 
 @pytest.mark.parametrize(
