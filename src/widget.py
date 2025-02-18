@@ -13,12 +13,13 @@ def mask_account_card(account_info: str) -> str:
 
 def get_date(date_str: str) -> str:
     """
-Преобразует дату из одного формата в другой.
+    Преобразует дату из одного формата в другой.
 
-    :param date_str: Дата в формате "YYYY-MM-DDTHH:MM:SS.mmmmmm".
-    :return: Дата в формате "DD.MM.YYYY".
+        :param date_str: Дата в формате "YYYY-MM-DDTHH:MM:SS.mmmmmm".
+        :return: Дата в формате "DD.MM.YYYY".
     """
     from datetime import datetime
+
     try:
         dt = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S.%f")
         return dt.strftime("%d.%m.%Y")
