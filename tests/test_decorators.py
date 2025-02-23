@@ -1,46 +1,35 @@
-from unittest.mock import patch
+import os
 import pytest
-from src.decorators import log
+from src.decorators import Log
+
+log = Log("logs/mylog.txt")
 
 
-@pytest.fixture
-def capsys(capsys):
-    with patch('decorators.logging'):
-        yield capsys
+@log
+def subtract(a, b):
+    return a - b
 
 
-def test_log_decorator_success(capsys):
-    @log()
-    def add_numbers(x, y):
-        return x + y
-
-    assert add_numbers(1, 2) == 3
-    captured = capsys.readouterr()
-    assert "add_numbers ok" in captured.out
-
-
-def test_log_decorator_error(capsys):
-    @log()
-    def divide_numbers(a, b):
-        return a / b
-
-    with pytest.raises(ZeroDivisionError):
-        divide_numbers(10, 0)
-
-    captured = capsys.readouterr()
-    expected_message = "divide_numbers error: ZeroDivisionError. Inputs: (10, 0), {}"
-    assert expected_message in captured.err
+# Очистка/имитация лога перед тестами
+@pytest.fixture(autouse=True)
+def clean_logs():
+    """ Fixture очищает лог файл перед каждым тестом """
+    log_file = "logs/mylog.txt"
+    if os.path.exists(log_file):
+        os.remove(log_file)
 
 
-def test_log_to_file(tmp_path):
-    file_name = tmp_path / "test.log"
+def test_log_success():
+    result = subtract(10, 5)
+    assert result == 5
+    with open("logs/mylog.txt") as f:
+        contents = f.read()
+        assert "Called subtract with args: (10, 5)," in contents
 
-    @log(str(file_name))
-    def multiply_numbers(x, y):
-        return x * y
 
-    multiply_numbers(2, 3)
-
-    with open(file_name, 'r') as f:
-        content = f.read()
-        assert "multiply_numbers ok" in content
+def test_log_error():
+    with pytest.raises(TypeError):  # Ожидаем ошибку при неверных типах
+        subtract(1, 'a')  # Это приведет к ошибке
+    with open("logs/mylog.txt") as f:
+        contents = f.read()
+        assert "Called subtract with args: (1, 'a')," in contents

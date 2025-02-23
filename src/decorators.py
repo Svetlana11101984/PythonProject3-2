@@ -1,54 +1,27 @@
-import logging
 import os
 from functools import wraps
 
 
-class log:
-    def __init__(self, filename=None):
+class Log:
+    def __init__(self, filename):
         self.filename = filename
-
-        if not self.filename:
-            logging.basicConfig(level=logging.INFO)
-        else:
-            if not os.path.exists(os.path.dirname(self.filename)):
-                os.makedirs(os.path.dirname(self.filename))
-
-            logging.basicConfig(
-                level=logging.INFO,
-                format='%(asctime)s - %(levelname)s - %(message)s',
-                handlers=[
-                    logging.FileHandler(self.filename),
-                    logging.StreamHandler()
-                ]
-            )
+        # Создаем директорию, если её нет
+        os.makedirs(os.path.dirname(os.path.abspath(self.filename)), exist_ok=True)
 
     def __call__(self, func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            try:
-                result = func(*args, **kwargs)
-                message = f"{func.__name__} ok"
-                logging.info(message)
-                return result
-            except Exception as e:
-                message = f"{func.__name__} error: {type(e).__name__}. Inputs: {args}, {kwargs}"
-                logging.error(message)
-                raise
-
+            # Логика записи в файл
+            with open(self.filename, 'a') as f:
+                f.write(f"Called {func.__name__} with args: {args}, {kwargs}\n")
+            return func(*args, **kwargs)
         return wrapper
 
 
-@log(filename="mylog.txt")
-def my_function():
-    pass
+# Присваиваем экземпляр класса Log, указывая файл лога
+log = Log("logs/mylog.txt")
 
 
-@log()  # Логи будут отправляться в консоль
-def another_function(a, b):
-    """Функция деления двух чисел."""
-    return a / b
-
-
-if __name__ == "__main__":
-    print(my_function(1, 2))  # Запись логов в файл
-    print(another_function(10, 0))  # Запись логов в консоль, проверка обработки ошибки
+@log
+def subtract(a, b):
+    return a - b
