@@ -1,5 +1,7 @@
 import os
+
 import pytest
+
 from src.decorators import Log
 
 log = Log("logs/mylog.txt")
