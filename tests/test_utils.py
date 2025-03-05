@@ -1,7 +1,5 @@
 from unittest.mock import patch
-
 import pytest
-
 from src.utils import read_json_file
 
 

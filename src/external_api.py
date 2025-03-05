@@ -1,5 +1,4 @@
 import os
-
 import requests
 
 EXCHANGE_API_KEY = os.getenv('EXCHANGE_API_KEY')
@@ -17,10 +16,9 @@ def convert_to_rub(transaction):
     if currency == 'RUB':
         return float(amount)
     elif currency in ['USD', 'EUR']:
-        url = f'http://api.exchangeratesapi.io/v1/latest?access_key={EXCHANGE_API_KEY}'
+        url = f'https://api.exchangerate.host/latest?base={currency}&symbols=RUB&key={EXCHANGE_API_KEY}'
         response = requests.get(url)
-        rates = response.json()['rates']
-        rate = rates[currency]
-        return round(float(amount) * rate, 2)
+        rates = response.json()['rates']['RUB']
+        return round(float(amount) * rates, 2)
     else:
         raise ValueError(f"Не поддерживаемая валюта: {currency}")
