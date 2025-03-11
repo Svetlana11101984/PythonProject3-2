@@ -1,7 +1,8 @@
 import json
+from typing import List, Dict
 
 
-def read_json_file(file_path):
+def read_json_file(file_path: str) -> List[Dict]:
     """
     Функция для чтения JSON-файла и возврата списка словарей с данными о финансовых транзакциях.
 

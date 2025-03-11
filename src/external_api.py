@@ -1,10 +1,11 @@
 import os
 import requests
+from typing import Dict, Union
 
 EXCHANGE_API_KEY = os.getenv('EXCHANGE_API_KEY')
 
 
-def convert_to_rub(transaction):
+def convert_to_rub(transaction: Dict[str, Union[int, float, str]]) -> float:
     """
     Функция для конвертации суммы транзакции в рубли.
 
