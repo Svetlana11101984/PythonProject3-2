@@ -1,6 +1,12 @@
 import json
 from typing import List, Dict
 
+# Импортируем логгер из logging_config.py
+from .logging_config import setup_logger
+
+# Создаем логгер для модуля utils
+logger = setup_logger(__name__)
+
 
 def read_json_file(file_path: str) -> List[Dict]:
     """
@@ -13,16 +19,17 @@ def read_json_file(file_path: str) -> List[Dict]:
         with open(file_path, 'r') as f:
             data = json.load(f)
             if isinstance(data, list):
+                logger.info(f"JSON файл успешно прочитан: {len(data)} элементов")
                 return data
             else:
-                print("JSON файл не содержит список")
+                logger.warning("JSON файл не содержит список")
                 return []
     except FileNotFoundError:
-        print("Файл не найден")
+        logger.error(f"Файл не найден: {file_path}")
         return []
     except json.JSONDecodeError:
-        print("Ошибка декодирования JSON")
+        logger.error(f"Ошибка декодирования JSON: {file_path}")
         return []
     except Exception as e:
-        print(f"Произошла ошибка: {e}")
+        logger.exception(f"Произошла неожиданная ошибка: {e}")
         return []
