@@ -1,6 +1,6 @@
 # import sys  # Импорт временно отключён, но оставлен для будущего использования
-from src.utils import read_json_file
 from src.external_api import convert_to_rub
+from src.utils import read_json_file
 
 
 def main():

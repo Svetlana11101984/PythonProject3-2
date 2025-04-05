@@ -1,7 +1,6 @@
 from src.logging_config import setup_logger
+from src.masks import get_mask_account_number, get_mask_card_number
 from src.utils import read_json_file
-from src.masks import get_mask_card_number, get_mask_account_number
-
 
 # Создаем логгер для основного модуля
 logger = setup_logger(__name__)

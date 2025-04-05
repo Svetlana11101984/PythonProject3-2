@@ -1,6 +1,7 @@
 import os
-import requests
 from typing import Dict, Union
+
+import requests
 
 EXCHANGE_API_KEY = os.getenv('EXCHANGE_API_KEY')
 

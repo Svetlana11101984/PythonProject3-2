@@ -1,4 +1,7 @@
-# Импорт конфигурации логирования
+# import logging
+# from typing import Optional
+
+# Импортируем логгер из logging_config.py
 from .logging_config import setup_logger
 
 # Создаем логгер для модуля masks
@@ -6,7 +9,8 @@ logger = setup_logger(__name__)
 
 
 def get_mask_card_number(card_number: str) -> str:
-    """Возвращает маску номера банковской карты форматом 'XXXX XX** **** XXXX'
+    """
+    Возвращает маску номера банковской карты форматом 'XXXX XX** **** XXXX'
 
     :param card_number: Номер карты
     :return: Маскированный номер карты
@@ -21,7 +25,8 @@ def get_mask_card_number(card_number: str) -> str:
 
 
 def get_mask_account_number(account_number: str) -> str:
-    """Возвращает маску номера банковского счета по формату '**XXXX'.
+    """
+    Возвращает маску номера банковского счета по формату '**XXXX'.
 
     :param account_number: Номер счета
     :return: Маска номера счета
