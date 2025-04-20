@@ -3,40 +3,72 @@ from pathlib import Path
 
 import pandas as pd
 
-DATA_DIR = Path(__file__).resolve().parent.parent / 'data'
+# Глобальная константа для путей к файлам
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DATA_DIR = PROJECT_ROOT / 'data'
+
+CSV_FILE_PATH = DATA_DIR / 'transactions.csv'
+EXCEL_FILE_PATH = DATA_DIR / 'transactions.xlsx'
 
 
-def read_csv_transactions(csv_file_path=None, limit=None):
-    """Читает транзакции из CSV файла и возвращает в формате списка словарей.
-
-    Args:
-        csv_file_path (str): Путь к файлу CSV.
-        limit (int): Максимальное число возвращаемых записей.
-
-    Returns:
-        List[Dict]: Список транзакций.
+def read_csv_transactions(csv_file_path=CSV_FILE_PATH, limit=None):
     """
-    csv_file_path = DATA_DIR / 'transactions.csv' if csv_file_path is None else csv_file_path
+    Функция для считывания финансовых операций из CSV файла.
+
+    Параметры:
+    ----------
+    csv_file_path : str or Path-like object
+        Путь к файлу CSV. По умолчанию берется путь к файлу в директории 'data'.
+    limit : int, optional
+        Лимит на количество возвращаемых записей.
+
+    Возвращает:
+    ---------
+    list of dict
+        Список словарей с финансовыми операциями.
+    """
     try:
         with open(csv_file_path, 'r', newline='', encoding='utf-8-sig') as file:
             reader = csv.DictReader(file)
             records = list(reader)
+
+            # Применяем ограничение, если оно передано
             if limit is not None:
                 records = records[:limit]
+
             return records
     except FileNotFoundError:
-        print(f"Не найден файл {csv_file_path}")
+        print(f"Файл '{csv_file_path}' не найден.")
         return []
 
 
-def read_excel_transactions(excel_file_path=None, limit=None):
-    excel_file_path = DATA_DIR / 'transactions_excel.xlsx' if excel_file_path is None else excel_file_path
-    print(f"Чтение Excel файла из: {excel_file_path}")
+def read_excel_transactions(excel_file_path=EXCEL_FILE_PATH, limit=None):
+    """
+    Функция для считывания финансовых операций из Excel файла.
+
+    Параметры:
+    ----------
+    excel_file_path : str or Path-like object
+        Путь к файлу Excel. По умолчанию берется путь к файлу в директории 'data'.
+    limit : int, optional
+        Лимит на количество возвращаемых записей.
+
+    Возвращает:
+    ---------
+    list of dict
+        Список словарей с финансовыми операциями.
+    """
     try:
         df = pd.read_excel(excel_file_path)
+
+        # Преобразование dataframe в список словарей
+        records = df.to_dict('records')
+
+        # Применяем ограничение, если оно передано
         if limit is not None:
-            df = df.iloc[:limit]
-        return df.to_dict('records')
+            records = records[:limit]
+
+        return records
     except FileNotFoundError:
-        print(f"Не найден файл {excel_file_path}")
+        print(f"Файл '{excel_file_path}' не найден.")
         return []
