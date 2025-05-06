@@ -8,7 +8,12 @@ from src.financial_tools.csv_excel import read_csv_transactions, read_excel_tran
 
 class TestCsvExcel(unittest.TestCase):
     @patch("builtins.open", new_callable=mock_open,
-           read_data="id,state,date,amount,currency_name,currency_code,from,to,description\n650703,EXECUTED,2023-09-05T11:30:32Z,16210,Sol,PEN,Счет 58803664561298323391,Счет 39745660563456619397,Перевод организации\n" * 100)
+           read_data=(
+                   "id,state,date,amount,currency_name,currency_code,from,to,description\n"
+                   "650703,EXECUTED,2023-09-05T11:30:32Z,16210,Sol,PEN,"
+                   "Счет 58803664561298323391,Счет 39745660563456619397,Перевод организации\n" * 100
+           )
+           )
     def test_read_csv_transactions(self, mock_file):
         """Тест для проверки функции чтения CSV с лимитом."""
         result = read_csv_transactions(limit=100)
