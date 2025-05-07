@@ -1,13 +1,8 @@
 import json
 import re
-import sys
 from collections import Counter
 from datetime import datetime
-from pathlib import Path
 from typing import Dict, List
-
-from operations import read_json_file
-from src.external_api import convert_to_rub
 
 
 def load_json_data(filepath: str) -> List[Dict]:
@@ -33,6 +28,21 @@ def search_in_description(transactions: List[Dict], keyword: str) -> List[Dict]:
     return matching_transactions
 
 
+def filter_operations(operations, search_string):
+    """
+    Фильтрует список операций по строке поиска.
+
+    :param operations: Список словарей с операциями
+    :param search_string: Строка для поиска в описании операций
+    :return: Отфильтрованный список операций
+    """
+    filtered_operations = [
+        operation for operation in operations
+        if re.search(search_string, operation['description'], re.IGNORECASE)
+    ]
+    return filtered_operations
+
+
 def filter_by_status(transactions: List[Dict], status: str) -> List[Dict]:
     """ Фильтрует транзакции по статусу. """
     normalized_status = status.upper()
@@ -42,26 +52,22 @@ def filter_by_status(transactions: List[Dict], status: str) -> List[Dict]:
     return filtered_transactions
 
 
-def count_categories(transactions: List[Dict]) -> Dict[str, int]:
-    """ Группирует транзакции по категориям в описаниях. """
-    categories = {
-        'пополнение': ['пополнение', 'внесение', 'deposit'],
-        'переводы': ['перевод', 'transfer', 'wiring'],
-        'снятие наличных': ['снятие', 'withdrawal', 'cash out'],
-        'интернет-платежи': ['интернет', 'онлайн', 'online']
-    }
+def count_operations_by_category(operations, categories):
+    """
+    Подсчитывает количество операций по категориям.
 
-    counters = Counter()
+    :param operations: Список операций
+    :param categories: Список категорий
+    :return: Словарь с количеством операций по категориям
+    """
+    category_count = Counter()
 
-    for txn in transactions:
-        description = txn.get('description', '').lower()
-        for category, keywords in categories.items():
-            for kw in keywords:
-                if kw in description:
-                    counters[category] += 1
-                    break
+    for operation in operations:
+        category = operation.get('category')
+        if category in categories:
+            category_count[category] += 1
 
-    return dict(counters)
+    return dict(category_count)
 
 
 def sort_by_date(transactions: List[Dict], ascending: bool = True) -> List[Dict]:
@@ -74,45 +80,26 @@ def sort_by_date(transactions: List[Dict], ascending: bool = True) -> List[Dict]
 
 
 def main():
-    """ Основной поток выполнения программы. """
-    if len(sys.argv) > 1:
-        operations_file = sys.argv[1]
-    else:
-        operations_file = Path(__file__).parent / 'data' / 'operations.json'  # Путь по умолчанию
+    operations = [
+        {'id': 1, 'description': 'Перевод на счет', 'category': 'переводы'},
+        {'id': 2, 'description': 'Оплата за услуги', 'category': 'платежи'},
+        {'id': 3, 'description': 'Кэшбэк', 'category': 'кэшбэк'},
+        # Добавьте другие операции по необходимости
+    ]
 
-    transactions = load_json_data(operations_file)
+    print("Добро пожаловать в систему управления операциями!")
 
-    if not transactions:
-        print("Нет доступных транзакций для обработки.")
-        return
+    search_string = input("Введите строку для поиска в описании операций: ")
+    filtered = filter_operations(operations, search_string)
+    print("Отфильтрованные операции:")
+    for op in filtered:
+        print(op)
 
-    converted_amounts = {}  # Инициализация словаря для хранения преобразованных сумм
-
-    keyword = input("Введите ключевое слово для поиска транзакций (или оставьте пустым для пропуска): ")
-    if keyword.strip():
-        transactions = search_in_description(transactions, keyword)
-
-    status = input("Введите статус для фильтрации (EXECUTED, CANCELED, PENDING): ")
-    transactions = filter_by_status(transactions, status)
-
-    ascending = input("Сортировать по возрастанию? (да/нет): ").strip().lower() == 'да'
-    sorted_transactions = sort_by_date(transactions, ascending)
-
-    counts = count_categories(sorted_transactions)
-    print("Количество транзакций по категориям:")
-    for cat, count in counts.items():
-        print(f"- {cat}: {count}")
-
-    # Преобразуем суммы и сохраняем их в словаре
-    for tid, transaction in enumerate(sorted_transactions):
-        amount = convert_to_rub(transaction)
-        converted_amounts[tid] = amount  # Сохраняем преобразованную сумму по идентификатору транзакции
-        print(f"TID {tid}: {transaction['description']} - {amount} RUB")
-
-    # Выводим все преобразованные суммы
-    print("\nПреобразованные суммы:")
-    for tid, amount in converted_amounts.items():
-        print(f"TID {tid}: {amount} RUB")
+    categories = ['переводы', 'платежи', 'кэшбэк']
+    category_count = count_operations_by_category(operations, categories)
+    print("\nКоличество операций по категориям:")
+    for category, count in category_count.items():
+        print(f"{category}: {count}")
 
 
 if __name__ == "__main__":
