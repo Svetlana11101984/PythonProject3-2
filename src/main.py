@@ -1,26 +1,10 @@
-import json
 import re
 from collections import Counter
-from datetime import datetime
 from typing import Dict, List
-
-
-def load_json_data(filepath: str) -> List[Dict]:
-    """ Загружает данные из JSON-файла. """
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        print(f"Ошибка: Файл по пути '{filepath}' не найден.")
-        return []
-    except json.JSONDecodeError:
-        print("Ошибка: Не удалось декодировать файл JSON.")
-        return []
 
 
 def search_in_description(transactions: List[Dict], keyword: str) -> List[Dict]:
     """ Производит поиск транзакций по наличию ключевого слова в описании. """
-    # Создаем регулярное выражение для нечувствительного к регистру поиска
     pattern = re.compile(re.escape(keyword), re.IGNORECASE)
     matching_transactions = [
         txn for txn in transactions if pattern.search(txn.get('description', ''))
@@ -28,55 +12,24 @@ def search_in_description(transactions: List[Dict], keyword: str) -> List[Dict]:
     return matching_transactions
 
 
-def filter_operations(operations, search_string):
-    """
-    Фильтрует список операций по строке поиска.
-
-    :param operations: Список словарей с операциями
-    :param search_string: Строка для поиска в описании операций
-    :return: Отфильтрованный список операций
-    """
+def filter_operations(operations: List[Dict], search_string: str) -> List[Dict]:
+    """ Фильтрует список операций по строке поиска. """
     filtered_operations = [
         operation for operation in operations
-        if re.search(search_string, operation['description'], re.IGNORECASE)
+        if re.search(search_string, operation.get('description', ''), re.IGNORECASE)
     ]
     return filtered_operations
 
 
-def filter_by_status(transactions: List[Dict], status: str) -> List[Dict]:
-    """ Фильтрует транзакции по статусу. """
-    normalized_status = status.upper()
-    filtered_transactions = [
-        txn for txn in transactions if txn.get('status', '').upper() == normalized_status
-    ]
-    return filtered_transactions
-
-
-def count_operations_by_category(operations, categories):
-    """
-    Подсчитывает количество операций по категориям.
-
-    :param operations: Список операций
-    :param categories: Список категорий
-    :return: Словарь с количеством операций по категориям
-    """
+def count_operations_by_category(operations: List[Dict], categories: List[str]) -> Dict[str, int]:
+    """ Подсчитывает количество операций по категориям. """
     category_count = Counter()
-
     for operation in operations:
+        # Изменено, чтобы использовать get для избежания KeyError
         category = operation.get('category')
         if category in categories:
             category_count[category] += 1
-
     return dict(category_count)
-
-
-def sort_by_date(transactions: List[Dict], ascending: bool = True) -> List[Dict]:
-    """ Сортирует транзакции по дате. """
-    return sorted(
-        transactions,
-        key=lambda txn: datetime.fromisoformat(txn.get('date')),
-        reverse=not ascending
-    )
 
 
 def main():

@@ -1,4 +1,5 @@
-from src.processing import sort_by_date
+# tests/test_processing.py
+from src.processing import sort_by_date  # Обратите внимание на правильный импорт
 
 
 def test_sort_by_date_ascending():
